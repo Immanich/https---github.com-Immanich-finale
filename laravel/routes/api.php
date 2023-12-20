@@ -10,7 +10,7 @@ use App\Http\Controllers\SoldItemController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+///234234234234324sdfd
 /*
 |--------------------------------------------------------------------------
 | API Routes
