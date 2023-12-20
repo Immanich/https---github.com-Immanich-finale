@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->foreignId('supplier_id')->references('id')->on('suppliers');
-            $table->integer('total');
+            $table->float('total');
             $table->integer('invoice_no');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();

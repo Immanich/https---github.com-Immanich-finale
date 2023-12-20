@@ -16,9 +16,15 @@ class MerchandiseFactory extends Factory
      */
     public function definition(): array
     {
+
+        $brand = [
+            'Nestle', 'Del Monte', 'San Miguel',
+            'Heineken', 'Lucky Me'
+        ];
+
         return [
             
-            'brand' => fake()->randomElement(['Nestle', 'Del Monte', 'San Miguel', 'Heineken']),
+            'brand' => fake()->randomElement($brand),
             'description' => implode(' ', fake()->sentences()),
             'retail_price' => fake() ->numberBetween(100.00, 200.00),
             'whole_sale_price' => fake() ->numberBetween(50.00, 150.00),

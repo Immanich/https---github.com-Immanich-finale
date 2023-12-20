@@ -16,8 +16,13 @@ class SupplierFactory extends Factory
      */
     public function definition(): array
     {
+        $brand = [
+            'Nestle', 'Del Monte', 'San Miguel',
+            'Heineken'. 'Lucky Me'
+        ];
+
         return [
-            'company_name' => fake()->randomElement(['Nestle', 'Del Monte', 'San Miguel', 'Heineken']),
+            'company_name' => fake()->randomElement($brand),
             'address' => fake() -> address(),
             'phone' => fake() ->phoneNumber(),
             'contact_person' => fake() ->name(),

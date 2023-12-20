@@ -2,61 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function update(Request $request, User $user){
+        $fields = $request->validate([
+            'username' => 'string',
+            'fullname' => 'string',
+            'phoneNumber' => 'string',
+            'email' => 'string|email',
+        ]);
+
+        $user->update($fields);
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'User with ID#' . $user->id . 'has been update.'
+        ]);
+
+    }
+
+    public function store(Request $request, User $user){
+        $fields = $request->validate([
+            'username' => 'string',
+            'fullname' => 'string',
+            'phoneNumber' => 'string',
+            'email' => 'string|email',
+        ]);
+
+        $fields['phoneNumber'] = $request->filled('phoneNumber') ? $request->input('phoneNumber') : null;
+
+        $user = $user->create($fields);
+
+
+
+        return response()->json([
+            'status' => 'OK',
+            'user' => $user,
+            'message' => 'User with ID#' . $user->id . 'has been updated.'
+        ]);
+
+    }
+
+    public function destroy(User $user) {
+        $name = $user->fullName;
+        $user->delete();
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => "The user $name has been deleted."
+        ]);
+    }
+
     public function index() {
-        $user = User::orderBy('id')->get();
+        $users = User::orderBy('id')->get();
 
-        return view('users.index', ['users' => $user]);
+        return response()->json($users);
     }
 
-    public function create()
-    {
-        return view('users.create');
-    }
+    public function view(User $user) {
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request -> validate([
-            'id' => 'required|numeric',
-            'username' => 'required',
-            'fullname' => 'required',
-            'phoneNumber' => 'required|numeric',
-            'email' => 'required|email'
-        ]);
-
-        User::create([
-            'id' => $request->id,
-            'username' => $request->username,
-            'fullname' => $request->fullname,
-            'phoneNumber' => $request->phoneNumber,
-            'email' => $request->email
-        ]);
-
-        return redirect('/users')->with('message', 'A new user has been added');
-    }
-
-    public function edit(User $user)
-    {
-        return view('users.edit', compact('user'));
-    }
-
-    public function update(User $user, Request $request)
-    {
-        $request->validate([
-            'username' => 'required',
-            'fullname' => 'required',
-            'phoneNumber' => 'required',
-            'email' => 'required'
-        ]);
-
-        $user->update($request->all());
-        return redirect('/users')->with('message', "$user->id has been updated.");
+        return response()->json($user);
     }
 }

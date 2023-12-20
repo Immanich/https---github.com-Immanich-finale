@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('purchased_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('merchandises_id')->references('id')->on('merchandises');
+            $table->foreignId('merchandise_id')->references('id')->on('merchandises');
             $table->foreignId('purchase_id')->references('id')->on('purchases');
             $table->integer('whole_sale_qty');
-            $table->integer('purchase_price');
+            $table->float('purchase_price');
             $table->timestamps();
         });
     }

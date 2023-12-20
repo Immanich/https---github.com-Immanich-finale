@@ -2,63 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Supplier;
+use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    public function index()
-    {
-        $supplier = Supplier::get();
-
-        return view('suppliers.index', ['suppliers' => $supplier]);
-    }
-
-    public function create()
-    {
-        return view('supplier.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|numeric',
-            'company_name' => 'required',
-            'address' => 'required',
-            'phone' => 'required|numeric',
-            'contact_person' => 'required',
+    public function update(Request $request, Supplier $supplier){
+        $fields = $request->validate([
+            'company_name' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+            'contact_person' => 'required|string',
         ]);
 
-        Supplier::create([
-            'id' => $request->id,
-            'company_name' => $request->company_name,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'contact_person' => $request->contact_person,
+        $supplier->update($fields);
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Supplier with ID# ' . $supplier->id . ' has been updated.'
         ]);
 
-        return redirect('/suppliers')->with('message', 'A new supplier has been added');
     }
 
-    public function edit(Supplier $supplier)
-    {
-        return view('suppliers.edit', compact('supplier'));
-    }
-
-    public function update(Supplier $supplier, Request $request)
-    {
-        $request->validate([
-            'id' => 'required|numeric',
-            'company_name' => 'required',
-            'address' => 'required',
-            'phone' => 'required|numeric',
-            'contact_person' => 'required',
+    public function store(Request $request, Supplier $supplier){
+        $fields = $request->validate([
+            'company_name' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+            'contact_person' => 'required|string',
         ]);
 
-        $supplier->update($request->all());
-        return redirect('/suppliers')->with('message', "$supplier->id has been updated.");
+        $fields['company_name'] = $request->filled('company_name') ? $request->input('company_name') : null;
+
+        $supplier = $supplier->create($fields);
+
+
+
+        return response()->json([
+            'status' => 'OK',
+            'supplier' => $supplier,
+            'message' => 'Supplier with ID# ' . $supplier->id . ' has been updated.'
+        ]);
+
+    }
+
+    public function destroy(Supplier $supplier) {
+        $details = $supplier->name;
+        $supplier->delete();
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => "The supplier $details has been deleted."
+        ]);
+    }
+
+    public function index() {
+        $suppliers = Supplier::orderBy('company_name')->get();
+
+        return response()->json($suppliers);
+    }
+
+    public function view(Supplier $supplier) {
+
+        return response()->json($supplier);
     }
 }
